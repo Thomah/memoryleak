@@ -1,0 +1,32 @@
+name: Java CI with Gradle
+
+on: push
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up JDK
+        uses: actions/setup-java@v1
+        with:
+          java-version: 15
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+      - name: App Build with Gradle
+        run: ./gradlew build
+      - name: Docker Build with Gradle
+        run: ./gradlew bootBuildImage --imageName=thomah/memoryleak
+      - name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+      - name: Docker Tag
+        run: docker tag thomah/memoryleak:latest thomah/memoryleak:${GITHUB_REF##*/}
+      - name: Push ref to DockerHub
+        run: docker push thomah/memoryleak:${GITHUB_REF##*/}
+      - name: Push latest to DockerHub
+        run: docker push thomah/memoryleak:latest
