@@ -28,6 +28,7 @@ The app + Docker image :
 
 ```bash
 docker run -d --name memoryleak \
+  -p 8080:8080 \
   thomah/memoryleak:<tag>
 ```
 
