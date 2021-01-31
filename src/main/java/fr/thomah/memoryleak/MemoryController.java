@@ -2,6 +2,7 @@ package fr.thomah.memoryleak;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -22,13 +23,14 @@ public class MemoryController {
         LOGGER.info("Total memory: " + mem);
     }
 
-    @RequestMapping(value = "/purge", method = RequestMethod.GET)
+    @Scheduled(fixedRate = 4000)
     public void purge() {
-        al = null;
-        System.gc();
-        al = new ArrayList<>();
-        long mem = Runtime.getRuntime().totalMemory();
-        LOGGER.info("Total memory: " + mem);
+        if(al.size() > 0) {
+            al.remove(al.size() - 1);
+            System.gc();
+            long mem = Runtime.getRuntime().totalMemory();
+            LOGGER.info("Total memory: " + mem);
+        }
     }
 
 }

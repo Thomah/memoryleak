@@ -40,8 +40,3 @@ docker run -d --name memoryleak \
 curl --head --location 'http://localhost:8080/compute'
 ```
 
-### Clean memory
-
-```bash
-curl --head --location 'http://localhost:8080/purge'
-```
